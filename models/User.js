@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcryptjs')
 
 const userSchema = new mongoose.Schema(
   {
@@ -39,6 +40,16 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 )
 
+//ENCRYPT PASSWORD BEFORE SAVING
+userSchema.pre('save', async function (next) {
+  const user = this
+  if (user.isModified('password')) {
+    const salt = await bcrypt.genSalt(8)
+    user.password = await bcrypt.hash(user.password, salt)
+  }
+  next()
+})
+
 //methods is accessible on the instances of user
 userSchema.methods.generateToken = async function () {
   const user = this
@@ -47,7 +58,6 @@ userSchema.methods.generateToken = async function () {
   })
   user.tokens = user.tokens.concat({ token })
   await user.save()
-
   return token
 }
 
