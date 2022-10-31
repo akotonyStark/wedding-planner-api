@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
+const jwt = require('jsonwebtoken')
 
 const userSchema = new mongoose.Schema(
   {
@@ -37,6 +38,18 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 )
+
+//methods is accessible on the instances of user
+userSchema.methods.generateToken = async function () {
+  const user = this
+  const token = jwt.sign({ _id: user._id.toString() }, 'myuniquesecret', {
+    expiresIn: '1day',
+  })
+  user.tokens = user.tokens.concat({ token })
+  await user.save()
+
+  return token
+}
 
 const User = mongoose.model('User', userSchema)
 module.exports = User
