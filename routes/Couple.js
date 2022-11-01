@@ -16,4 +16,20 @@ router.post('/couple', async (req, res) => {
   }
 })
 
+router.get('/couple/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+    const couple = await Couple.where('userCredentials')
+      .equals(id)
+      .populate('userCredentials')
+    if (couple) {
+      res.send(couple)
+    } else {
+      res.status(404).send({ message: 'No results found' })
+    }
+  } catch (error) {
+    res.status(500).send(error)
+  }
+})
+
 module.exports = router
