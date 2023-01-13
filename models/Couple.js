@@ -34,7 +34,7 @@ const coupleSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
-  userCredentials: {
+  userAccount: {
     type: mongoose.SchemaTypes.ObjectId,
     ref: 'User',
   },

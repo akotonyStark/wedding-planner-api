@@ -2,6 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const userRouter = require('./routes/User')
 const coupleRouter = require('./routes/Couple')
+const taskRouter = require('./routes/Task')
 const app = express()
 require('./db/Mongoose')
 //allow all origins
@@ -10,6 +11,7 @@ app.use(cors())
 app.use(express.json())
 app.use(userRouter)
 app.use(coupleRouter)
+app.use(taskRouter)
 
 app.get('/', (req, res) => {
   res.send('Welcome to the Wedding Planner API')

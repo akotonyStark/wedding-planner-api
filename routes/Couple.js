@@ -16,12 +16,15 @@ router.post('/couple', async (req, res) => {
   }
 })
 
+router.get('/couple', async (req, res) => {
+  const couplesList = await Couple.find({})
+  res.send(couplesList)
+})
+
 router.get('/couple/:id', async (req, res) => {
   try {
     const { id } = req.params
-    const couple = await Couple.where('userCredentials')
-      .equals(id)
-      .populate('userCredentials')
+    const couple = await Couple.where('userID').equals(id).populate('userID')
     if (couple) {
       res.send(couple)
     } else {

@@ -50,6 +50,22 @@ userSchema.pre('save', async function (next) {
   next()
 })
 
+userSchema.statics.findByCredentials = async (email, password) => {
+  const user = await User.findOne({ email })
+  console.log(user)
+  if (!user) {
+    throw new Error('Unable to Login')
+  }
+
+  //verify the password
+  const isMatch = await bcrypt.compare(password, user.password)
+
+  if (!isMatch) {
+    throw new Error('Unable to Login')
+  }
+  return user
+}
+
 //methods is accessible on the instances of user
 userSchema.methods.generateToken = async function () {
   const user = this
