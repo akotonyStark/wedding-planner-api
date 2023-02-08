@@ -24,8 +24,10 @@ router.get('/couple', async (req, res) => {
 router.get('/couple/:id', async (req, res) => {
   try {
     const { id } = req.params
-    const couple = await Couple.where('userID').equals(id).populate('userID')
+    const couple = await Couple.where('userAccount').equals(id).populate('userAccount')
     if (couple) {
+      // let results = Object.keys(couple)
+      // delete results.userAccount
       res.send(couple)
     } else {
       res.status(404).send({ message: 'No results found' })

@@ -4,7 +4,7 @@ const auth = require('../middleware/auth')
 const router = express.Router()
 
 //unprotected task route
-router.post('/new_task', async (req, res) => {
+router.post('/new-task', async (req, res) => {
   let task = new Task(req.body)
 
   if (!task) {
@@ -18,11 +18,17 @@ router.post('/new_task', async (req, res) => {
 router.post('/task', auth, async (req, res) => {
   let task = new Task({ ...req.body, author: req.user._id })
 
-  if (!task) {
-    return res.status(400).send()
+  try{
+    if (!task) {
+      return res.status(400).send()
+    }
+    await task.save()
+    res.status(201).send({ data: task, message: 'Successfully Created' })
   }
-  await task.save()
-  res.status(201).send({ data: task, message: 'Successfully Created' })
+  catch(e){
+    res.status(500).send(e)
+  }
+  
 })
 
 router.get('/task', async (req, res) => {

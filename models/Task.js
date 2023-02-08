@@ -26,6 +26,10 @@ const taskSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
+    author:{
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'User',
+    },
   },
   { timestamps: true }
 )

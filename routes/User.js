@@ -11,7 +11,7 @@ router.get('/users', async (req, res) => {
   }
 })
 
-router.post('/signup', async (req, res) => {
+router.post('/auth/signup', async (req, res) => {
   try {
     const user = new User(req.body)
     if (user) {
@@ -26,19 +26,19 @@ router.post('/signup', async (req, res) => {
   }
 })
 
-router.post('/login', async (req, res) => {
+router.post('/auth/login', async (req, res) => {
   try {
     const user = await User.findByCredentials(req.body.email, req.body.password)
     const token = await user.generateToken()
 
     res.send({ user, token })
   } catch (e) {
-    console.log(e)
+    //console.log(e)
     res.status(400).send()
   }
 })
 
-router.post('/user/create-profile', auth, async (req, res) => {
+router.post('/user/profile', auth, async (req, res) => {
   try {
     const couple_profile = new Couple({
       ...req.body,
