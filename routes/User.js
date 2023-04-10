@@ -51,7 +51,6 @@ router.post('/auth/logoutAll', auth, async (req, res) => {
   }
 })
 
-
 router.post('/auth/logout', auth, async (req, res) => {
   try {
     const user = (req.user)
@@ -89,10 +88,6 @@ router.post('/user/create-profile', auth, async (req, res) => {
 router.get('/user/profile', auth, async (req, res) => {
   try {
     let couple_profile = await Couple.where('userAccount').equals(req.user._id)
-    // .populate('userAccount')
-    // let coupleOBJ = Object.keys(couple_profile)
-    // delete coupleOBJ.userAccount.tokens
-    // delete coupleOBJ.userAccount.password
     res.send(couple_profile)
   } catch (error) {
     res.send(error)

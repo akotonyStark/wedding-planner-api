@@ -31,7 +31,7 @@ router.post('/task', auth, async (req, res) => {
   
 })
 
-router.get('/task', async (req, res) => {
+router.get('/tasks', async (req, res) => {
   let tasks = await Task.find({})
   return res.status(200).send(tasks)
 })
