@@ -22,6 +22,9 @@ const coupleSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
+  weddingDate:{
+    type: Date
+  },
   partnerName: {
     type: String,
     trim: true,

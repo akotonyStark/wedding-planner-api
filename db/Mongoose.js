@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+ const mongoose = require('mongoose')
 
 const connectionURL =
   'mongodb+srv://akotonyStark:Loki2020@cluster0.4n1nv.mongodb.net/WeddingPlanner'

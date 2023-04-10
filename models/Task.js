@@ -6,7 +6,6 @@ const taskSchema = new mongoose.Schema(
     task_name: {
       type: String,
       required: true,
-      lowercase: true,
       trim: true,
     },
     note: {
@@ -22,14 +21,16 @@ const taskSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    task_date: {
+    task_completed_date: {
       type: Date,
       required: true,
     },
+    isComplete: Boolean,
     author:{
       type: mongoose.SchemaTypes.ObjectId,
       ref: 'User',
     },
+    assignedTo: String
   },
   { timestamps: true }
 )

@@ -29,6 +29,7 @@ router.post('/auth/signup', async (req, res) => {
 router.post('/auth/login', async (req, res) => {
   try {
     const user = await User.findByCredentials(req.body.email, req.body.password)
+    console.log(user)
     const token = await user.generateToken()
 
     res.send({ user, token })
@@ -38,7 +39,7 @@ router.post('/auth/login', async (req, res) => {
   }
 })
 
-router.post('/user/profile', auth, async (req, res) => {
+router.post('/user/create-profile', auth, async (req, res) => {
   try {
     const couple_profile = new Couple({
       ...req.body,
@@ -49,7 +50,7 @@ router.post('/user/profile', auth, async (req, res) => {
       await couple_profile.save()
       res.status(201).send(couple_profile)
     } else {
-      res.status(400)
+      res.status(400).send()
     }
   } catch (error) {
     res.send(error)
