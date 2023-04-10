@@ -7,10 +7,7 @@ const postSchema = new mongoose.Schema({
     replies:{
         type: Array
     },
-    author:{
-        type: mongoose.SchemaTypes.ObjectId,
-        ref: 'User',
-    },
+    author: Object
 }, {timestamps:true})
 
 

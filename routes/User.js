@@ -29,10 +29,39 @@ router.post('/auth/signup', async (req, res) => {
 router.post('/auth/login', async (req, res) => {
   try {
     const user = await User.findByCredentials(req.body.email, req.body.password)
-    console.log(user)
     const token = await user.generateToken()
 
     res.send({ user, token })
+  } catch (e) {
+    //console.log(e)
+    res.status(400).send()
+  }
+})
+
+router.post('/auth/logoutAll', auth, async (req, res) => {
+  try {
+    const user = (req.user)
+    user.tokens = []
+    await user.save()
+    res.send()
+   
+  } catch (e) {
+    //console.log(e)
+    res.status(400).send()
+  }
+})
+
+
+router.post('/auth/logout', auth, async (req, res) => {
+  try {
+    const user = (req.user)
+    const token = req.header('Authorization').replace('Bearer ', '')
+    const tokens = user.tokens.filter((item) => item.token != token)
+   // console.log(user)
+    user.tokens = tokens
+    await user.save()
+    res.send()
+
   } catch (e) {
     //console.log(e)
     res.status(400).send()

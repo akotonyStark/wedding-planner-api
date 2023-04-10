@@ -14,9 +14,7 @@ router.get('/posts', async(req, res) => {
 })
 
 router.get('/my-posts', auth, async(req, res) => {
-    // const profile = await Couple.where('userAccount').equals(req.user._id).populate('userAccount')
-    // res.send(profile)
-    let posts = await Post.find({}).where('author').equals(req.user._id)
+    let posts = await Post.find({}).where('author.userAccount').equals(req.user._id)
     if(!posts){
         return res.status(400).send()
     }
@@ -25,12 +23,16 @@ router.get('/my-posts', auth, async(req, res) => {
 
 router.post('/post', auth, async(req, res) => {
     try{
+        const author = await Couple.findOne().where('userAccount').equals(req.user._id)
+ 
         let newPost = new Post({
             ...req.body, 
-            author: req.user._id,
+            author: author,
             likes: 0,
             views: 0
         })
+
+       // res.send(newPost)
 
         if(newPost){
             await newPost.save()
