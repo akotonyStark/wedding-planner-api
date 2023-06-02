@@ -21,9 +21,9 @@ const taskSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    task_completed_date: {
+    dateCompleted: {
       type: Date,
-      required: true,
+      required: false,
     },
     isComplete: Boolean,
     author:{

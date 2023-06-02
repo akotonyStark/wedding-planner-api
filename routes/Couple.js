@@ -16,7 +16,7 @@ router.post('/couple', async (req, res) => {
   }
 })
 
-router.get('/couple', async (req, res) => {
+router.get('/couples', async (req, res) => {
   const couplesList = await Couple.find({})
   res.send(couplesList)
 })

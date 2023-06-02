@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
   res.send('Welcome to the Wedding Planner API')
 })
 
-const PORT = 3000
-app.listen('3000', () => {
+const PORT = 3003
+app.listen('3003', () => {
   console.log(`listening on port ${PORT}`)
 })

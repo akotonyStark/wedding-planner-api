@@ -3,6 +3,28 @@ const auth = require('../middleware/auth')
 const User = require('../models/User')
 const Couple = require('../models/Couple')
 const router = express.Router()
+const multer = require('multer')
+const path = require('path')
+
+
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'images')
+  },
+
+  filename: (req, file, cb) => {
+    console.log(file)
+    cb(null, Date.now() + path.extname(file.originalname))
+  }
+})
+
+const upload = multer({storage:storage})
+
+router.post("/upload", upload.single('image'), (req, res) => {
+  console.log(req.file)
+  res.send("Image uploaded")
+})
 
 router.get('/users', async (req, res) => {
   const users = await User.find({})
@@ -85,12 +107,28 @@ router.post('/user/create-profile', auth, async (req, res) => {
   }
 })
 
+router.post('/user/image-profile', auth, upload.single('image'), async (req, res) => {
+  try {
+    //let profile = await Couple.where('userAccount').equals(req.user._id)
+    let profile = await Couple.findOne({userAccount: req.user._id})
+    profile.avatar = req.file.path
+   // console.log(profile)
+    await profile.save()
+    res.send('Uploaded successfully')
+    
+  } catch (error) {
+    console.log(error)
+    res.status(500).send(error)
+  }
+})
+
 router.get('/user/profile', auth, async (req, res) => {
   try {
     let couple_profile = await Couple.where('userAccount').equals(req.user._id)
     res.send(couple_profile)
   } catch (error) {
     res.send(error)
+   
   }
 })
 
