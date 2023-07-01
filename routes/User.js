@@ -122,6 +122,26 @@ router.post('/user/image-profile', auth, upload.single('image'), async (req, res
   }
 })
 
+//update wedding profile
+router.post('/user/wedding-profile', auth,  async (req, res) => {
+  try {
+    //let profile = await Couple.where('userAccount').equals(req.user._id)
+    let profile = await Couple.findOne({userAccount: req.user._id})
+    if(!profile){
+      return res.status(404).send({error: 'Profile not found'})
+    }
+    profile.weddingDetails = req.body
+    profile.weddingDate = req.body.weddingDate
+   // console.log(profile)
+    await profile.save()
+    res.status(200).send({data: profile, message: 'Updated profile successfully'})
+    
+  } catch (error) {
+    console.log(error)
+    res.status(500).send(error)
+  }
+})
+
 router.get('/user/profile', auth, async (req, res) => {
   try {
     let couple_profile = await Couple.where('userAccount').equals(req.user._id)

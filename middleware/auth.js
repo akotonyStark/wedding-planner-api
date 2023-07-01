@@ -6,12 +6,14 @@ const auth = async (req, res, next) => {
   try {
     const token = req.header('Authorization').replace('Bearer ', '')
     const decoded = jwt.verify(token, 'myuniquesecret')
+    // console.log(decoded)
     const user = await User.findOne({ _id: decoded._id, 'tokens.token': token })
-    //const user = await User.findOne({ _id: decoded._id, 'token': token })
+    //const user = await User.findOne({ _id: decoded._id})
+
     const profile = await Couple.findOne({ _id: user._id })
 
     if (!user) {
-      throw new Error()
+      res.status(401).send({ error: 'Unauthorized' })
     }
 
     req.token =  token
@@ -19,7 +21,8 @@ const auth = async (req, res, next) => {
     req.profile = profile
     next()
   } catch (e) {
-    res.status(401).send({ error: 'Unauthorized' })
+    console.log(e)
+    res.status(500).send({ error: e })
   }
 }
 

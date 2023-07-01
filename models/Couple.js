@@ -42,6 +42,9 @@ const coupleSchema = new mongoose.Schema({
     type: mongoose.SchemaTypes.ObjectId,
     ref: 'User',
   },
+  weddingDetails: {
+    type: Object
+  }
 })
 
 const Couple = mongoose.model('Couple', coupleSchema)
