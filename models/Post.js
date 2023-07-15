@@ -2,7 +2,10 @@ const mongoose = require('mongoose')
 
 const postSchema = new mongoose.Schema({
     subject: String,
-    content: String,
+    content: {
+        type: String,
+        required: true
+    },
     likes: Number,
     views: Number,
     replies:{
