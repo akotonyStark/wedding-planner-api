@@ -22,6 +22,6 @@ app.get('/', (req, res) => {
 })
 
 const PORT = 3003
-app.listen('3003', () => {
+app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`)
 })
