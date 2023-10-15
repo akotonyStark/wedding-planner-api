@@ -5,6 +5,7 @@ const coupleRouter = require('./routes/Couple')
 const taskRouter = require('./routes/Task')
 const postRouter = require('./routes/Post')
 const commentsRouter = require('./routes/BlogComment')
+const articlesRouter = require('./routes/Articles')
 const app = express()
 require('./db/Mongoose')
 //allow all origins
@@ -15,7 +16,9 @@ app.use(userRouter)
 app.use(coupleRouter)
 app.use(taskRouter)
 app.use(postRouter)
-app.use(commentsRouter)
+// app.use(commentsRouter)
+
+app.use(articlesRouter)
 
 app.get('/', (req, res) => {
   res.send('Welcome to the Wedding Planner API')

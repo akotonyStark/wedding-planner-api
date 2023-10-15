@@ -2,6 +2,7 @@ const express = require('express')
 const Post = require('../models/Post')
 const auth = require('../middleware/auth')
 const Couple = require('../models/Couple')
+const Comment = require('../models/Comment')
 const router = express.Router()
 
 
@@ -18,11 +19,22 @@ router.get('/my-posts', auth, async (req, res) => {
 
     let loggedInUser = req.user._id
     const author = await Couple.findOne().where('userAccount').equals(loggedInUser)
+    console.log("author", author)
     let posts = await Post.find({}).where('author').equals(author)
+    let mappedPosts = posts.map((item) => {
+        return {
+            ...item._doc,
+            author: {
+                avatar: author.avatar,
+                fullName: `${author.firstName} ${author.lastName}`
+            }
+        }
+    })
+    let comments = await Comment.find({})
     if (!posts) {
         return res.status(400).send()
     }
-    res.status(200).send({posts, user: req.user})
+    res.status(200).send(mappedPosts)
 })
 
 router.post('/post', auth, async (req, res) => {
