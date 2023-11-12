@@ -28,7 +28,7 @@ const article_comment_schema = new mongoose.Schema({
             ref: 'User'
         },
         content: String,
-        likes: Number
+        likes: Number,
     }],
     likes: {
         type: Number,
