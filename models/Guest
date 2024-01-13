@@ -20,6 +20,10 @@ const guest_schema = new mongoose.Schema({
     assigned: Boolean,
     gender: String,
     event: [String],
+    userId: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: 'User',
+    },
    
 }, {timestamps:true})
 
