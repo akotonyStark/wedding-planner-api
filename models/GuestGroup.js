@@ -6,7 +6,11 @@ const guest_group_schema = new mongoose.Schema({
         type: String,
         required: true
     },
-    numberOfGuests: Number
+    numberOfGuests: Number,
+    userId: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: 'User',
+    },
 
 }, {timestamps:true})
 
