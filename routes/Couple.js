@@ -1,5 +1,5 @@
 const express = require('express')
-const Couple = require('../models/Couple')
+const Couple = require('../models/AccountModels/Couple')
 const router = express.Router()
 
 router.post('/couple', async (req, res) => {

@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const GuestGroup = require('../models/GuestGroup')
+const GuestGroup = require('../models/GuestModels/GuestGroup')
 const auth = require('../middleware/auth')
 
 router.get('/guest-group/all', async(req, res) => {

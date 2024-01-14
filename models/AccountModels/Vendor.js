@@ -2,11 +2,11 @@ const mongoose = require('mongoose')
 const validator = require('validator')
 
 const vendorSchema = new mongoose.Schema({
-  firstName: {
+  name: {
     type: String,
     trim: true,
   },
-  lastName: {
+  email: {
     type: String,
     trim: true,
   },
@@ -14,17 +14,13 @@ const vendorSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
-  region: {
+  address: {
     type: String,
     trim: true,
   },
-  city: {
-    type: String,
-    trim: true,
-  },
-  userId: {
+  category: {
     type: mongoose.SchemaTypes.ObjectId,
-    ref: 'User',
+    ref: 'Category',
   },
 })
 

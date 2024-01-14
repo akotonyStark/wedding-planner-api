@@ -1,7 +1,7 @@
 const express = require('express')
 const auth = require('../middleware/auth')
-const BlogComment = require('../models/InfluencerBlogComment')
-const Couple = require('../models/Couple')
+const BlogComment = require('../models/ArticlesModels/InfluencerBlogComment')
+const Couple = require('../models/AccountModels/Couple')
 const router = express.Router()
 
 

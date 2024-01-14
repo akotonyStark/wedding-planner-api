@@ -1,6 +1,6 @@
 const auth = require('../middleware/auth')
-const BudgetCategory = require('../models/BudgetCategory')
-const Couple = require('../models/Couple')
+const BudgetCategory = require('../models/BudgetModels/BudgetCategory')
+const Couple = require('../models/AccountModels/Couple')
 
 const router = require('express').Router()
 

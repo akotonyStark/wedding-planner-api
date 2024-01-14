@@ -1,7 +1,7 @@
 const express = require('express')
-const Task = require('../models/Task')
+const Task = require('../models/TaskModels/Task')
 const auth = require('../middleware/auth')
-const Couple = require('../models/Couple')
+const Couple = require('../models/AccountModels/Couple')
 const router = express.Router()
 
 //unprotected task route

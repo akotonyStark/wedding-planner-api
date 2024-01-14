@@ -1,8 +1,8 @@
 const express = require('express')
-const Post = require('../models/Post')
+const Post = require('../models/Post/Post')
 const auth = require('../middleware/auth')
-const Couple = require('../models/Couple')
-const Comment = require('../models/Comment')
+const Couple = require('../models/AccountModels/Couple')
+const Comment = require('../models/ArticlesModels/Comment')
 const router = express.Router()
 
 

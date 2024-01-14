@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const Guest = require('../models/Guest')
+const Guest = require('../models/GuestModels/Guest')
 const auth = require('../middleware/auth')
 
 
@@ -66,6 +66,37 @@ router.post('/guest', auth, async(req, res) => {
         res.status(500).send(err)
     }
    
+})
+
+router.put('/guest/:id', auth, async(req, res) => {
+    let guestId = req.params.id
+    try{
+        let guest = await Guest.findOne({_id: guestId}).populate('group')
+        if(!guest){
+            return res.send('Table is not tied to a group')
+        }
+        guest.group = req.body?.table
+        await guest.save()
+        res.status(200).send({data: guest, message: 'Guest Assigned Successfully'})
+    }
+    catch(error){
+        res.status(500).send({message: error})
+    }
+    
+    
+})
+
+
+router.delete('/guest/:id', auth, async(req, res) => {
+    const id = req.params.id
+
+    let guest =  await Guest.deleteOne({ _id: id });
+    if(!guest){
+        return res.status(404).send('Error deleting item')
+    }
+    else{
+        res.status(200).send(guest)
+    }
 })
 
 
