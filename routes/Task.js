@@ -68,7 +68,7 @@ router.get('/my-tasks', auth, async (req, res) => {
   let results = []
   tasks.forEach((task) => {
     // console.log(task.author._id.toString(), req.user._id.toString())
-    if(task.author._id.toString() == req.user._id.toString()){
+    if(task.author?._id.toString() == req.user?._id.toString()){
       let obj = {
                   _id: task._id,
                   author: task.author._id.toString(),
