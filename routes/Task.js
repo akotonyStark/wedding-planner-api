@@ -2,6 +2,8 @@ const express = require('express')
 const Task = require('../models/TaskModels/Task')
 const auth = require('../middleware/auth')
 const Couple = require('../models/AccountModels/Couple')
+const { sendSharedTasksEmail } = require('../emails/user_account')
+const User = require('../models/AccountModels/User')
 const router = express.Router()
 
 //unprotected task route
@@ -25,6 +27,24 @@ router.post('/task', auth, async (req, res) => {
     }
     await task.save()
     res.status(201).send({ data: task, message: 'Successfully Created' })
+  }
+  catch(e){
+    res.status(500).send(e)
+  }
+  
+})
+
+//share tasks 
+router.post('/task/share-list', auth, async (req, res) => {
+  let {recipientEmail, emailContent, tasks} = req.body
+  let sender = await Couple.findOne({userAccount: req.user._id})
+  let senderName = `${sender?.firstName} ${sender.lastName}`
+
+  try{
+    if (sender) {
+      sendSharedTasksEmail(recipientEmail, senderName, tasks, emailContent)
+      res.send('Tasks shared successfully')
+    }
   }
   catch(e){
     res.status(500).send(e)
@@ -66,6 +86,7 @@ router.get('/my-tasks', auth, async (req, res) => {
   let tasks = await Task.find({}).populate('author')
   let profile = await Couple.where('userAccount').equals(req.user._id)
   let results = []
+
   tasks.forEach((task) => {
     // console.log(task.author._id.toString(), req.user._id.toString())
     if(task.author?._id.toString() == req.user?._id.toString()){
@@ -86,10 +107,24 @@ router.get('/my-tasks', auth, async (req, res) => {
       results.push(obj)
     }
   })
+
+  const {type} = req.query; 
   let noCompleted = results.filter((task) => task.isComplete == true).length
   let percentageCompleted = (noCompleted/results.length) * 100
-  return res.status(200).send({tasks: results, percentageCompleted})
+
+  if(type){
+    const filteredTasks = results.filter((task) => task.ceremony_type.toLowerCase() === type.toLocaleLowerCase())
+    noCompleted = filteredTasks.filter((task) => task.isComplete == true).length
+    percentageCompleted = (noCompleted/filteredTasks.length) * 100
+    return res.status(200).send({tasks: filteredTasks, percentageCompleted}) 
+  }
+  else{
+    return res.status(200).send({tasks: results, percentageCompleted})
+  }
+  
 })
+
+
 
 router.get('/task/:id', auth, async (req, res) => {
   let id = req.params.id

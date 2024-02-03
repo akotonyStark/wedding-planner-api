@@ -5,6 +5,7 @@ const Couple = require('../models/AccountModels/Couple')
 const router = express.Router()
 const multer = require('multer')
 const path = require('path')
+const { sendWelcomeEmail, sendInvitation } = require('../emails/user_account')
 
 
 
@@ -39,6 +40,8 @@ router.post('/auth/signup', async (req, res) => {
     if (user) {
       const token = await user.generateToken()
       await user.save()
+
+      
       res.status(201).send(user)
     } else {
       res.status(400)
@@ -100,7 +103,11 @@ router.post('/user/create-profile', auth, async (req, res) => {
     })
 
     if (couple_profile) {
+
       await couple_profile.save()
+      //send welcome and Partner invitation email
+      sendWelcomeEmail(req.user.email,  req.body.firstName)
+      sendInvitation(req.body.partnerEmail, req.body.partnerName , req.body.firstName)
       res.status(201).send(couple_profile)
     } else {
       res.status(400).send()

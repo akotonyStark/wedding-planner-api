@@ -9,6 +9,9 @@ const articlesRouter = require('./routes/Articles')
 const budgetRouter = require('./routes/BudgetCategory')
 const guestRouter = require('./routes/Guest')
 const guestGroupRouter = require('./routes/GuestGroup')
+const { sendWelcomeEmail } = require('./emails/user_account')
+
+require("dotenv").config();
 
 
 const app = express()
@@ -28,11 +31,15 @@ app.use(guestGroupRouter)
 
 app.use(articlesRouter)
 
+
+
 app.get('/', (req, res) => {
-  res.send('Welcome to the Wedding Planner API')
+  res.send('Welcome to the Xperience Bliss API')
 })
 
 const PORT = 3003
 app.listen(PORT, () => {
-  console.log(`listening on port ${PORT}`)
+  console.log(`listening to API on port ${PORT}`)
 })
+
+
