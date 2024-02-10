@@ -9,7 +9,7 @@ const verifiedSender = process.env.VERIFIED_SENDER
 
 const templates = {
     // password_reset_confirm: "d-a02ad738dfc8404c8da016b46a7548sd",
-    // password_reset        : "d-e779dcfad71b47e7be8d79bdfe75fb0c",
+    password_reset        : "d-be666a6744e146d5a76710ddc2cf8514",
     // confirm_account       : "d-68c570dd12044d894e07566bf951964",
     welcome: "d-d5e1375688c343d7903feea9e4426ae1",
     coupple_invitation: "d-ebc4d646f1fd47a99884b1108019ed22"
@@ -77,7 +77,7 @@ const sendSharedTasksEmail = (recipientEmail, senderName, tasks, message) => {
     sgMail.send({
         to: recipientEmail,
         from: verifiedSender,
-        subject: 'Account cancellation!',
+        subject: 'Invitation to assist your friend on Wedding Planner!',
         html:   `<i>
                     <h2>Hello, your friend ${senderName}, needs your assistance</h2>
                     <span>They would like for you to assist them with the following tasks in lieu of their upcoming wedding</span>
@@ -101,8 +101,27 @@ const sendSharedTasksEmail = (recipientEmail, senderName, tasks, message) => {
         })
 }
 
+    //password reset email
+    const sendPasswordResetEmail = (email, name) => {
+        sgMail.send({
+            to: email,
+            from: verifiedSender,
+            subject: 'Password Reset!',
+            template_id: templates.password_reset,
+            dynamic_template_data: {
+                name: name,
+             }
+            })
+            .then(() => {
+                console.log('Success Email sent')
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+    }
+
 module.exports = {
     sendWelcomeEmail,
     sendCancellationEmail,
-    sendInvitation, sendSharedTasksEmail
+    sendInvitation, sendSharedTasksEmail, sendPasswordResetEmail
 }

@@ -5,7 +5,7 @@ const Couple = require('../models/AccountModels/Couple')
 const router = express.Router()
 const multer = require('multer')
 const path = require('path')
-const { sendWelcomeEmail, sendInvitation } = require('../emails/user_account')
+const { sendWelcomeEmail, sendInvitation, sendPasswordResetEmail } = require('../emails/user_account')
 
 
 
@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
   }
 })
 
-const upload = multer({storage:storage})
+const upload = multer({ storage: storage })
 
 router.post("/upload", upload.single('image'), (req, res) => {
   console.log(req.file)
@@ -41,7 +41,7 @@ router.post('/auth/signup', async (req, res) => {
       const token = await user.generateToken()
       await user.save()
 
-      
+
       res.status(201).send(user)
     } else {
       res.status(400)
@@ -54,7 +54,7 @@ router.post('/auth/signup', async (req, res) => {
 router.post('/auth/login', async (req, res) => {
   try {
     const user = await User.findByCredentials(req.body.email, req.body.password)
-    if(!user){
+    if (!user) {
       return res.status(404).send("Invalid login credentials")
     }
     const token = await user.generateToken()
@@ -72,7 +72,7 @@ router.post('/auth/logoutAll', auth, async (req, res) => {
     user.tokens = []
     await user.save()
     res.send()
-   
+
   } catch (e) {
     //console.log(e)
     res.status(400).send()
@@ -84,7 +84,7 @@ router.post('/auth/logout', auth, async (req, res) => {
     const user = (req.user)
     const token = req.header('Authorization').replace('Bearer ', '')
     const tokens = user.tokens.filter((item) => item.token != token)
-   // console.log(user)
+    // console.log(user)
     user.tokens = tokens
     await user.save()
     res.send()
@@ -106,8 +106,8 @@ router.post('/user/create-profile', auth, async (req, res) => {
 
       await couple_profile.save()
       //send welcome and Partner invitation email
-      sendWelcomeEmail(req.user.email,  req.body.firstName)
-      sendInvitation(req.body.partnerEmail, req.body.partnerName , req.body.firstName)
+      sendWelcomeEmail(req.user.email, req.body.firstName)
+      sendInvitation(req.body.partnerEmail, req.body.partnerName, req.body.firstName)
       res.status(201).send(couple_profile)
     } else {
       res.status(400).send()
@@ -120,12 +120,12 @@ router.post('/user/create-profile', auth, async (req, res) => {
 router.post('/user/image-profile', auth, upload.single('image'), async (req, res) => {
   try {
     //let profile = await Couple.where('userAccount').equals(req.user._id)
-    let profile = await Couple.findOne({userAccount: req.user._id})
+    let profile = await Couple.findOne({ userAccount: req.user._id })
     profile.avatar = req.file.path
-   // console.log(profile)
+    // console.log(profile)
     await profile.save()
     res.send('Uploaded successfully')
-    
+
   } catch (error) {
     console.log(error)
     res.status(500).send(error)
@@ -133,19 +133,19 @@ router.post('/user/image-profile', auth, upload.single('image'), async (req, res
 })
 
 //update wedding profile
-router.post('/user/wedding-profile', auth,  async (req, res) => {
+router.post('/user/wedding-profile', auth, async (req, res) => {
   try {
     //let profile = await Couple.where('userAccount').equals(req.user._id)
-    let profile = await Couple.findOne({userAccount: req.user._id})
-    if(!profile){
-      return res.status(404).send({error: 'Profile not found'})
+    let profile = await Couple.findOne({ userAccount: req.user._id })
+    if (!profile) {
+      return res.status(404).send({ error: 'Profile not found' })
     }
     profile.weddingDetails = req.body
     profile.weddingDate = req.body.weddingDate
-   // console.log(profile)
+    // console.log(profile)
     await profile.save()
-    res.status(200).send({data: profile, message: 'Updated profile successfully'})
-    
+    res.status(200).send({ data: profile, message: 'Updated profile successfully' })
+
   } catch (error) {
     console.log(error)
     res.status(500).send(error)
@@ -154,11 +154,59 @@ router.post('/user/wedding-profile', auth,  async (req, res) => {
 
 router.get('/user/profile', auth, async (req, res) => {
   try {
-    let couple_profile = await Couple.where('userAccount').equals(req.user._id)
-    res.send(couple_profile)
+    let couple_profile = await Couple.where('userAccount').equals(req.user._id).populate('userAccount')
+    let user = Object.assign(couple_profile[0], {})
+    delete user.userAccount.password
+    delete user.userAccount.tokens
+
+    res.send(user)
   } catch (error) {
     res.send(error)
-   
+
+  }
+})
+
+
+router.post('/user/update-account', auth, async (req, res) => {
+  let payload = {
+    ...req.body, ...req.user
+  }
+
+  try {
+    //const user = await User.findOne({ _id: req.user._id })
+    const filter = { _id: req.user._id };
+    const user = await User.findOne(filter);
+
+    if (user) {
+      if (payload.password !== '' || payload.email !== '') {
+        await User.updateOne(filter, { password: payload.password, email: payload.email });
+        user.password = payload.password
+        user.email = payload.email
+        await user.save()
+        sendPasswordResetEmail(payload.email, payload.firstName)
+      }
+      let profile = await Couple.findOne({ userAccount: req.user._id })
+
+      if (profile) {
+        const updates = Object.keys(req.body)
+        updates.forEach((update) => {
+          profile[update] = req.body[update]
+        })
+        await profile.save()
+        res.status(200).send({ payload: profile })
+
+      }
+      else {
+        res.send('No couple account found')
+      }
+
+
+    }
+    else {
+      res.status(401).send('User Not found')
+    }
+  } catch (error) {
+    res.send(error)
   }
 })
 
