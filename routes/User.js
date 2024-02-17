@@ -5,7 +5,8 @@ const Couple = require('../models/AccountModels/Couple')
 const router = express.Router()
 const multer = require('multer')
 const path = require('path')
-const { sendWelcomeEmail, sendInvitation, sendPasswordResetEmail } = require('../emails/user_account')
+const { sendWelcomeEmail, sendInvitation, sendPasswordResetEmail, sendCompletePasswordResetEmail } = require('../emails/user_account')
+const jwt = require('jsonwebtoken')
 
 
 
@@ -208,6 +209,55 @@ router.post('/user/update-account', auth, async (req, res) => {
   } catch (error) {
     res.send(error)
   }
+})
+
+router.post('/user/send-invitation', auth, async (req, res) => {
+  const {partnerEmail, partnerName} = req.body
+
+  try {
+    //const user = await User.findOne({ _id: req.user._id })
+    const filter = { _id: req.user._id };
+    const user = await User.findOne(filter);
+
+    if(user){
+      const sender = `${user.firstName} ${user.lastName}`
+      sendInvitation(partnerEmail,partnerName, sender )
+      return res.status(200).send('Invitation Sent')
+    }
+    else{
+      res.status(401).send('Unauthorized')
+    }
+  
+  } catch (error) {
+    res.send(error)
+  }
+})
+
+
+router.post('/send-reset-link', async(req, res) => {
+
+  try{
+    const user = await User.findOne({email: req.body.email})
+    console.log("Found user:", user)
+    if(user){
+      const token = jwt.sign({ _id: user._id.toString() }, 'myuniquesecret', {
+        expiresIn: '1day',
+      })
+      sendCompletePasswordResetEmail(req.body.email, `${process.env.APP_URL_LIVE}complete-password-reset/${token}`)
+      res.send('Login to your email to reset password')
+      //res.send(`complete-password-reset?token=${token}`)
+    }
+    else{
+      res.status(400).send('This user account does not exist')
+    }
+  }
+  catch(error){
+    console.log(error)
+    res.status(500).send(error)
+  }
+
+  
+ 
 })
 
 module.exports = router

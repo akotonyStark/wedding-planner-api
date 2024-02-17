@@ -8,8 +8,8 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 const verifiedSender = process.env.VERIFIED_SENDER
 
 const templates = {
-    // password_reset_confirm: "d-a02ad738dfc8404c8da016b46a7548sd",
-    password_reset        : "d-be666a6744e146d5a76710ddc2cf8514",
+    password_reset_confirm: "d-608a6067854f42d4bfbbf296ddb5a789",
+    password_update: "d-be666a6744e146d5a76710ddc2cf8514",
     // confirm_account       : "d-68c570dd12044d894e07566bf951964",
     welcome: "d-d5e1375688c343d7903feea9e4426ae1",
     coupple_invitation: "d-ebc4d646f1fd47a99884b1108019ed22"
@@ -101,15 +101,34 @@ const sendSharedTasksEmail = (recipientEmail, senderName, tasks, message) => {
         })
 }
 
-    //password reset email
-    const sendPasswordResetEmail = (email, name) => {
+//password reset email
+const sendPasswordResetEmail = (email, name) => {
         sgMail.send({
             to: email,
             from: verifiedSender,
             subject: 'Password Reset!',
-            template_id: templates.password_reset,
+            template_id: templates.password_update,
             dynamic_template_data: {
                 name: name,
+             }
+            })
+            .then(() => {
+                console.log('Success Email sent')
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+}
+
+//password reset email
+const sendCompletePasswordResetEmail = (email, url) => {
+        sgMail.send({
+            to: email,
+            from: verifiedSender,
+            subject: 'Password Reset!',
+            template_id: templates.password_reset_confirm,
+            dynamic_template_data: {
+                url: url,
              }
             })
             .then(() => {
@@ -123,5 +142,5 @@ const sendSharedTasksEmail = (recipientEmail, senderName, tasks, message) => {
 module.exports = {
     sendWelcomeEmail,
     sendCancellationEmail,
-    sendInvitation, sendSharedTasksEmail, sendPasswordResetEmail
+    sendInvitation, sendSharedTasksEmail, sendPasswordResetEmail, sendCompletePasswordResetEmail
 }
