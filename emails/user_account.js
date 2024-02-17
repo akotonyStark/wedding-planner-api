@@ -121,14 +121,14 @@ const sendPasswordResetEmail = (email, name) => {
 }
 
 //password reset email
-const sendCompletePasswordResetEmail = (email, url) => {
+const sendCompletePasswordResetEmail = (email, token) => {
         sgMail.send({
             to: email,
             from: verifiedSender,
             subject: 'Password Reset!',
             template_id: templates.password_reset_confirm,
             dynamic_template_data: {
-                url: url,
+                token: token,
              }
             })
             .then(() => {

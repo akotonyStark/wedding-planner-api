@@ -243,7 +243,7 @@ router.post('/send-reset-link', async(req, res) => {
       const token = jwt.sign({ _id: user._id.toString() }, 'myuniquesecret', {
         expiresIn: '1day',
       })
-      sendCompletePasswordResetEmail(req.body.email, `${process.env.APP_URL_LIVE}complete-password-reset/${token}`)
+      sendCompletePasswordResetEmail(req.body.email, token)
       res.send('Login to your email to reset password')
       //res.send(`complete-password-reset?token=${token}`)
     }
