@@ -256,8 +256,28 @@ router.post('/send-reset-link', async(req, res) => {
     res.status(500).send(error)
   }
 
+})
+
+router.post('/reset-password', async(req, res) => {
+  try{
+    const token = req.body.token
+    const data = jwt.decode(token)
+    const id = data._id
+    if(id){
+      const user = await User.findOne({_id: id})
+      user.password = req.body.password
+      await user.save()
+      return res.send("Password reset completed")
+    }
+    else{
+      return res.status(401).send("Unauthorized access")
+    }
+    
+  }
+  catch(e){
+    res.send(500)
+  }
   
- 
 })
 
 module.exports = router

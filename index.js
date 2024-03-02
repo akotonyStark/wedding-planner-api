@@ -9,6 +9,7 @@ const articlesRouter = require('./routes/Articles')
 const budgetRouter = require('./routes/BudgetCategory')
 const guestRouter = require('./routes/Guest')
 const guestGroupRouter = require('./routes/GuestGroup')
+const dashboardRouter = require('./routes/Dashboard')
 const { sendWelcomeEmail } = require('./emails/user_account')
 
 require("dotenv").config();
@@ -30,6 +31,7 @@ app.use(guestRouter)
 app.use(guestGroupRouter)
 
 app.use(articlesRouter)
+app.use(dashboardRouter)
 
 
 
