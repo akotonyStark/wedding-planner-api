@@ -2,27 +2,91 @@ const mongoose = require('mongoose')
 const validator = require('validator')
 
 const vendorSchema = new mongoose.Schema({
-  name: {
+  businessAdminName: {
     type: String,
     trim: true,
   },
-  email: {
+  businessName: {
     type: String,
     trim: true,
   },
-  phoneNumber: {
+  aboutBusiness: {
     type: String,
     trim: true,
   },
-  address: {
+  businessAddress: {
     type: String,
     trim: true,
   },
-  category: {
-    type: mongoose.SchemaTypes.ObjectId,
-    ref: 'Category',
+  businessRegion: {
+    type: String,
+    trim: true,
+  },
+  businessCity: {
+    type: String,
+    trim: true,
+  },
+  businessEmail: {
+    type: String,
+    trim: true,
+  },
+  businessPhone: {
+    type: String,
+    trim: true,
+  },
+  businessDays: {
+    type: String,
+    trim: true,
+  },
+  businessStartTime: {
+    type: String,
+    trim: true,
+  },
+  businessEndTime: {
+    type: String,
+    trim: true,
+  },
+  businessTimeOfDay: {
+    type: String,
+    trim: true,
+  },
+  businessVendorCategory: {
+    type: String,
+    trim: true,
+  },
+  businessStartingPrice: {
+    type: String,
+    trim: true,
+  },
+  numberOfPeople: {
+    type: String,
+    trim: true,
+  },
+  businessAccountEmail: {
+      type: String,
+      unique: true,
+      required: true,
+      lowercase: true,
+      trim: true,
+      validate(value) {
+        if (!validator.isEmail(value)) {
+          throw new Error('Email is invalid')
+        }
+      },
+  },
+  businessAccountPassword: {
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 7,
+      validate(value) {
+        if (value.toLowerCase().includes('password')) {
+          throw new Error('Password cannot contain the word password')
+        }
+      },
   },
 })
 
 const Vendor = mongoose.model('Vendor', vendorSchema)
 module.exports = Vendor
+
