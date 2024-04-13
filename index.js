@@ -1,5 +1,6 @@
 const express = require('express')
 const cors = require('cors')
+const bodyParser = require("body-parser");
 const userRouter = require('./routes/User')
 const coupleRouter = require('./routes/Couple')
 const taskRouter = require('./routes/Task')
@@ -20,7 +21,10 @@ require('./db/Mongoose')
 //allow all origins
 app.use(cors())
 //express middleware to parse all data to json
-app.use(express.json())
+
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+app.use(express.json());
 app.use(userRouter)
 app.use(coupleRouter)
 app.use(taskRouter)

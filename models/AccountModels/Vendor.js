@@ -35,7 +35,7 @@ const vendorSchema = new mongoose.Schema({
     trim: true,
   },
   businessDays: {
-    type: String,
+    type: Array,
     trim: true,
   },
   businessStartTime: {
@@ -62,29 +62,33 @@ const vendorSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
-  businessAccountEmail: {
-      type: String,
-      unique: true,
-      required: true,
-      lowercase: true,
-      trim: true,
-      validate(value) {
-        if (!validator.isEmail(value)) {
-          throw new Error('Email is invalid')
-        }
-      },
-  },
-  businessAccountPassword: {
-      type: String,
-      required: true,
-      trim: true,
-      minlength: 7,
-      validate(value) {
-        if (value.toLowerCase().includes('password')) {
-          throw new Error('Password cannot contain the word password')
-        }
-      },
-  },
+  // businessAccountEmail: {
+  //     type: String,
+  //     unique: true,
+  //     required: false,
+  //     lowercase: true,
+  //     trim: true,
+  //     validate(value) {
+  //       if (!validator.isEmail(value)) {
+  //         throw new Error('Email is invalid')
+  //       }
+  //     },
+  // },
+  // businessAccountPassword: {
+  //     type: String,
+  //     required: false,
+  //     trim: true,
+  //     minlength: 7,
+  //     validate(value) {
+  //       if (value.toLowerCase().includes('password')) {
+  //         throw new Error('Password cannot contain the word password')
+  //       }
+  //     },
+  // },
+  images: {
+    type: Array,
+    required: true
+  }
 })
 
 const Vendor = mongoose.model('Vendor', vendorSchema)
