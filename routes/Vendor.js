@@ -2,6 +2,10 @@ const express = require('express')
 const Vendor = require('../models/AccountModels/Vendor')
 const multer = require('multer')
 const path = require('path')
+const User = require('../models/AccountModels/User')
+const auth = require('../middleware/auth')
+const Couple = require('../models/AccountModels/Couple')
+const VendorReview = require('../models/ReviewModels/VendorReview')
 const router = express.Router()
 
 
@@ -77,6 +81,42 @@ router.post('/vendor',  upload.array('imageFiles'), async (req, res) => {
         res.status(500).send(error)
     }
 
+})
+
+
+router.post('/vendor/review', auth, async(req, res) => {
+
+    try{
+        let account = await User.findOne({_id: req.user._id}).select(['-password', '-tokens'])
+        let reviewer = await Couple.findOne({userAccount: account._id})
+
+        if(!reviewer){
+            return res.send("Please login to leave a review")
+        }
+        let review = new VendorReview({
+            review: req.body.review,
+            vendor: req.body.vendor,
+            reviewer: reviewer?._id,
+            reviewerName: reviewer?.firstName + ' ' +reviewer?.lastName,
+            avatar: reviewer?.avatar,
+        })
+
+        await review.save()
+        res.status(201).send({payload: review})
+        
+    }
+    catch(error){
+        res.send({error})
+    }
+    
+
+})
+
+
+router.get('/vendor/reviews/:id', async(req, res) => {
+    let id = req.params.id
+    let reviews = await VendorReview.find({vendor: id})
+    res.send({payload: reviews})
 })
 
 
