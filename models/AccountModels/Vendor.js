@@ -88,6 +88,12 @@ const vendorSchema = new mongoose.Schema({
   images: {
     type: Array,
     required: true
+  },
+  instagram: {
+    type: String
+  },
+  currency: {
+    type: String
   }
 })
 

@@ -67,15 +67,17 @@ router.get('/vendor/:id', async (req, res) => {
 
 router.post('/vendor',  upload.array('imageFiles'), async (req, res) => {
     const vendor = new Vendor(req.body)
-    vendor.images = []
+    let images = []
     try {
         if (!vendor) {
             return res.status(400).send('Error creating vendor account')
         }
         for(let i=0; i<req.files.length; i++){
-            vendor.images.push(req.files[i].path)
+            images.push(req.files[i].path)
         }
-        await vendor.save()
+        let uniqueImagesArr = [...new Set(images)]
+        vendor.images = uniqueImagesArr
+        //await vendor.save()
         res.status(201).send({ payload: vendor })
     } catch (error) {
         res.status(500).send(error)
