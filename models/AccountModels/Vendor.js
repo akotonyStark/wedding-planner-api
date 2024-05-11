@@ -64,15 +64,14 @@ const vendorSchema = new mongoose.Schema({
   },
   businessAccountEmail: {
       type: String,
-      // unique: true,
-      // required: false,
-      // lowercase: true,
-      // trim: true,
-      // validate(value) {
-      //   if (!validator.isEmail(value)) {
-      //     throw new Error('Email is invalid')
-      //   }
-      // },
+      unique: true,
+      lowercase: true,
+      trim: true,
+       validate(value) {
+        if (!validator.isEmail(value)) {
+          throw new Error('Email is invalid')
+        }
+      },
   },
   businessAccountPassword: {
       type: String,

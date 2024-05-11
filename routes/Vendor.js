@@ -75,9 +75,10 @@ router.post('/vendor',  upload.array('imageFiles'), async (req, res) => {
         for(let i=0; i<req.files.length; i++){
             images.push(req.files[i].path)
         }
+        //remove duplicate images
         let uniqueImagesArr = [...new Set(images)]
         vendor.images = uniqueImagesArr
-        //await vendor.save()
+        await vendor.save()
         res.status(201).send({ payload: vendor })
     } catch (error) {
         res.status(500).send(error)
